@@ -9,7 +9,7 @@ import Text.ParserCombinators.Parsec
 -- Values --
 ------------
 
-data SchemeVal = Atom String
+data SchemeVal = Symbol String
                | Pair SchemeVal SchemeVal
                | Number Integer
                | String String
@@ -39,7 +39,7 @@ showTail val = " . " ++ showVal val ++ ")"
 
 showVal :: SchemeVal -> String
 showVal (String contents) = "\"" ++ contents ++ "\""
-showVal (Atom name) = name
+showVal (Symbol name) = name
 showVal (Number contents) = show contents
 showVal (Bool True) = "#t"
 showVal (Bool False) = "#f"

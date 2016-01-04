@@ -12,13 +12,18 @@ primitives = [("+", numericBinop (+)),
               ("quotient", numericBinop quot),
               ("remainder", numericBinop rem),
               ("string?", oneAryPred isString),
-              ("atom?", oneAryPred isAtom), -- TODO: clarify atom vs symbol
+              ("symbol?", oneAryPred isSymbol),
+              ("atom?", oneAryPred isAtom),
               ("pair?", oneAryPred isPair),
               ("number?", oneAryPred isNumber)]
 
 oneAryPred :: (SchemeVal -> Bool) -> [SchemeVal] -> ThrowsError SchemeVal
 oneAryPred p (args : []) = return $ Bool $ p args
 oneAryPred _ args = throwError $ NumArgs 1 args
+
+isSymbol :: SchemeVal -> Bool
+isSymbol (Symbol _) = True
+isSymbol _ = False
 
 isString :: SchemeVal -> Bool
 isString (String _) = True

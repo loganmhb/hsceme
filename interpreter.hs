@@ -11,21 +11,21 @@ eval env val@(Number _) = return val
 eval env val@(Bool _) = return val
 eval env val@(Nil) = return val
 -- QUOTE special form
-eval env (Pair (Atom "quote") (Pair form Nil)) = return form
+eval env (Pair (Symbol "quote") (Pair form Nil)) = return form
 -- IF special form
-eval env (Pair (Atom "if") (Pair pred (Pair conseq (Pair alt Nil)))) = do
+eval env (Pair (Symbol "if") (Pair pred (Pair conseq (Pair alt Nil)))) = do
    evaledPred <- (eval env pred)
    case evaledPred of
      Bool False -> eval env alt
      Nil -> eval env alt
      otherwise -> eval env conseq
-eval env (Pair (Atom "if") (Pair pred (Pair conseq Nil))) = do
+eval env (Pair (Symbol "if") (Pair pred (Pair conseq Nil))) = do
   evaledPred <- (eval env pred)
   case evaledPred of
     Bool False -> return Nil
     Nil -> return Nil
     otherwise -> eval env conseq
-eval env (Pair (Atom func) args) = do
+eval env (Pair (Symbol func) args) = do
   f <- getVar env func
   evaledArgs <- mapM (eval env) $ unpackList args
   liftThrows $ apply f $ evaledArgs

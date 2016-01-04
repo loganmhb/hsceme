@@ -23,15 +23,15 @@ parseString = do
   char '"'
   return $ String x
 
-parseAtom :: Parser SchemeVal
-parseAtom = do
+parseSymbol :: Parser SchemeVal
+parseSymbol = do
   first <- letter <|> symbol
   rest <- many (letter <|> digit <|> symbol)
   let atom = first:rest
   return $ case atom of
     "#t" -> Bool True
     "#f" -> Bool False
-    _ -> Atom atom
+    _ -> Symbol atom
 
 parseNumber :: Parser SchemeVal
 parseNumber = many1 digit >>= (return . Number . read)
@@ -40,7 +40,7 @@ parseQuoted :: Parser SchemeVal
 parseQuoted = do
   char '\''
   x <- parseExpr
-  return $ constructList [Atom "quote", x]
+  return $ constructList [Symbol "quote", x]
 
 parseList :: Parser SchemeVal
 parseList = liftM constructList $ sepBy parseExpr spaces
@@ -52,7 +52,7 @@ parseDottedList = do
   return $ constructImproperList $ head ++ [tail]
 
 parseExpr :: Parser SchemeVal
-parseExpr = parseAtom
+parseExpr = parseSymbol
          <|> parseString
          <|> parseNumber
          <|> parseQuoted
