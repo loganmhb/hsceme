@@ -15,7 +15,8 @@ primitives = [("+", numericBinop (+)),
               ("symbol?", oneAryPred isSymbol),
               ("atom?", oneAryPred isAtom),
               ("pair?", oneAryPred isPair),
-              ("number?", oneAryPred isNumber)]
+              ("number?", oneAryPred isNumber),
+              ("list?", oneAryPred isList)]
 
 oneAryPred :: (SchemeVal -> Bool) -> [SchemeVal] -> ThrowsError SchemeVal
 oneAryPred p (args : []) = return $ Bool $ p args
@@ -38,6 +39,11 @@ isPair :: SchemeVal -> Bool
 isPair (Pair _ _) = True
 isPair Nil = True
 isPair _ = False
+
+isList :: SchemeVal -> Bool
+isList Nil = True
+isList (Pair _ cdr) = isList cdr
+isList _ = False
 
 isNumber :: SchemeVal -> Bool
 isNumber (Number _) = True

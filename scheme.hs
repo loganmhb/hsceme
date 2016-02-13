@@ -16,6 +16,9 @@ data SchemeVal = Symbol String
                | Bool Bool
                | Nil
                | PrimitiveFunction ([SchemeVal] -> ThrowsError SchemeVal)
+               | Function { params :: [String]
+                          , body :: SchemeVal
+                          , closure :: Env }
 
 unpackList :: SchemeVal -> [SchemeVal]
 unpackList Nil = []
@@ -45,6 +48,8 @@ showVal (Bool True) = "#t"
 showVal (Bool False) = "#f"
 showVal Nil = "()"
 showVal (Pair a b) = "(" ++ showVal a ++ showTail b
+showVal (PrimitiveFunction f) = "<primitive function>"
+showVal (Function params body closure) = "<function>"
 
 instance Show SchemeVal where show = showVal
 
